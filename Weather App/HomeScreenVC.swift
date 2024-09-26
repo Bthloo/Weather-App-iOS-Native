@@ -13,6 +13,7 @@ class HomeScreenVC: UIViewController {
     var weather : Weather?
     var activityIndicator: UIActivityIndicatorView!
     var errorLBL : UILabel!
+    var searchTitle : String!
     
     //MARK: - conect items
 
@@ -43,6 +44,14 @@ class HomeScreenVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+    
+        
+        navigationController?.navigationBar.tintColor = .white
+        navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.0271027524, green: 0.1688991727, blue: 0.3949258207, alpha: 1)
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.isHidden = false
+       
     
         applyGradientBackground(to: self.view)
         
@@ -78,7 +87,7 @@ class HomeScreenVC: UIViewController {
     
     func getData(){
        
-        ApiManager.sharedService.getWeatherData(cityName: "Cairo") { (weather, error) in
+        ApiManager.sharedService.getWeatherData(cityName: searchTitle) { (weather, error) in
             guard let weather = weather else{return}
             self.weather = weather
         }
@@ -87,29 +96,11 @@ class HomeScreenVC: UIViewController {
     
     func applyGradientBackground(to view: UIView) {
         let gradientLayer = CAGradientLayer()
-        
-        // Define the gradient's frame as the size of the view
         gradientLayer.frame = view.bounds
-        
-//        
-//                     Color(0xFFE3F2FD),
-//                     Color(0xFFE3F2FD),
-//                     Color(0xFF64B5F6),
-//                     Color(0xFF1565C0),
-//                     Color(0xFF0D47A1),
-//                     Color(0xFF0C387C),
-        
-        
-        // Set the gradient colors (white to blue)
         let colors = [  #colorLiteral(red: 0.0271027524, green: 0.1688991727, blue: 0.3949258207, alpha: 1).cgColor,#colorLiteral(red: 0.06393710209, green: 0.3405889868, blue: 0.6596827652, alpha: 1).cgColor,]
         gradientLayer.colors = colors
-        
-        // Define the start and end points for the gradient
-        // (0,0) is the top-left and (1,1) is the bottom-right
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0) // Top-left corner
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1) // Bottom-right corner
-        
-        // Add the gradient layer to the view
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1)
         view.layer.insertSublayer(gradientLayer, at: 0)
     }
     
@@ -146,6 +137,7 @@ class HomeScreenVC: UIViewController {
             activityIndicator = UIActivityIndicatorView(style: .large)
             activityIndicator.center = self.view.center
             activityIndicator.hidesWhenStopped = true
+        activityIndicator.color = .white
             self.view.addSubview(activityIndicator)
         }
     
@@ -169,7 +161,7 @@ extension HomeScreenVC : WeatherAppDelegate{
         debugPrint("Success")
        
         DispatchQueue.main.async {
-            
+        
             self.activityIndicator.stopAnimating()
             self.cityName.text = weather.location.name
             self.countryName.text = weather.location.country
@@ -177,7 +169,7 @@ extension HomeScreenVC : WeatherAppDelegate{
             self.windContainer.leftLBL.text = "Speed : \(weather.current.windKph) KPH"
             self.windContainer.rightLBL.text = "Direction : \(weather.current.windDir)"
             self.tempretureLBL.text =  String(weather.current.tempC)
-            self.statusLBL.text = "   \(weather.current.condition.text)"
+            self.statusLBL.text = weather.current.condition.text
             
             self.pressureContainer.leftLBL.text = "\(weather.current.pressureIn) in"
             self.pressureContainer.rightLBL.text = "\(weather.current.pressureMB) mb"

@@ -17,24 +17,36 @@ final class CustomContainer: UIView {
     
     @IBOutlet weak var rightLBL: UILabel!
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        configureView()
-    }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        configureView()
-    }
     
+    
+    @IBInspectable var cornerRadius: CGFloat = 25 {
+            didSet {
+                layer.cornerRadius = cornerRadius
+            }
+        }
+
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            configureView()
+        }
+        
+        required init?(coder: NSCoder) {
+            super.init(coder: coder)
+            configureView()
+        }
+        
+
     
     private func configureView() {
-            guard let view = self.loadViewFromNib(nibName: "CustomContainer") else { return }
-            view.frame = self.bounds
-            view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        view.layer.cornerRadius = 25
-        // Allow resizing
-            self.addSubview(view) // Add loaded view as a subview
+       
+        guard let view = self.loadViewFromNib(nibName: "CustomContainer") else { return }
+                view.frame = self.bounds
+                view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                // Add corner radius property
+                view.layer.cornerRadius = cornerRadius
+      
+                self.addSubview(view)// Add loaded view as a subview
         }
-    
+//    
 }
